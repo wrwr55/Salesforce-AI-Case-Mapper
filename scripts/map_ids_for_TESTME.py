@@ -6,6 +6,7 @@ Reads TESTME.xlsx, Accounts.csv, contacts.csv and maps AccountId & ContactId int
 Outputs TESTME_with_ids.xlsx and ambiguous_matches.csv.
 
 Drop this file in the same folder as TESTME.xlsx, Accounts.csv, contacts.csv (default: Downloads).
+If you wish to change default folder from downloads to something else just replace all instances of Downloads with your folder name.
 """
 from pathlib import Path
 import pandas as pd
@@ -23,7 +24,11 @@ AMBIGUOUS_CSV = BASE_DIR / "ambiguous_matches.csv"
 FUZZY_THRESHOLD = 85  # raise for stricter matching, lower to match more aggressively
 
 # -------- utilities --------
+
+# Some names may have inconsistencies when manually entered by people over a long period of time. 
+# The following makes it so Company X will tie to the same account/contact if entered in as Company X llc.
 COMMON_COMPANY_SUFFIXES = {"inc","inc.","llc","l.l.c","ltd","co","co.","corp","corporation","company","incorporated","plc","llp"}
+
 
 def normalize_company(name):
     if not isinstance(name, str): return ""
@@ -31,7 +36,7 @@ def normalize_company(name):
     s = s.lower()
     s = re.sub(r'[\u2018\u2019\u201c\u201d]', "'", s)
     s = re.sub(r'[^a-z0-9\s]', ' ', s)
-    # remove common suffix tokens to help match Micronetbd vs Micronetbd Inc
+    # remove common suffix tokens to help match Company vs Company Inc
     toks = [t for t in s.split() if t not in COMMON_COMPANY_SUFFIXES]
     return " ".join(toks).strip()
 
