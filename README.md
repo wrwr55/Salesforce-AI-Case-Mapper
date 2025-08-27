@@ -59,6 +59,7 @@ pip install xlrd
 
 * `TESTME.xlsx` — case workbook (sheet **Full Acc and Contact** preferred; otherwise first sheet used)
 * `Accounts.csv` — accounts export (must include `Id` and `Name` columns)
+  * To get this file go into the salesforce inspector and run a query that gets the Id and Name for the Account object and download the results
 * `contacts.csv` — contacts export (must include `Id` and `FirstName`/`LastName` or `FullName`; optional `AccountId` column is helpful)
 * `scripts/map_ids_for_TESTME.py` — convenience script (provided)
 * `scripts/map_ids_to_cases.py` — streaming / NDJSON-capable script (optional)
