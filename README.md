@@ -22,8 +22,11 @@ Once the main file is ran then it will create multiple files, however the one we
 Open this file in Excel and hide the columns the contain the Description and the Email Summary because they are no longer needed
 Copy the entire file and go back to the Salesforce inspector and navigate to Data Import
 There make sure to change the Action to Upsert and the Object to case
-Then paste the contents of the file into the Paste Data Here box and then click the Run Insert button
+Make sure that the External Id is set to "Id"
 
+Then paste the contents of the file into the Paste Data Here box
+BEFORE RUNNING SCROLL DOWN IN THE FIELD MAPPING SECTION AND CHANGE "Sub_Type__c" into "__Sub_Type__c" and "Category__c" into "__Category__c" then "Sub-Type" into "Sub_Type__c" and "Category" into "Category__c"
+ONLY AFTER CHANGING THOSE FIELDS CLICK THE RUN UPSERT BUTTON TO COMPLETE THE PROCESS
 
 
 
