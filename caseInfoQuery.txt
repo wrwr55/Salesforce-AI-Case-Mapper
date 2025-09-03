@@ -1,0 +1,1 @@
+SELECT Id, AccountId, ContactId, Account_Name__c, Description, Email_Summary__c, Type, Sub_Type__c, Category__c FROM Case
