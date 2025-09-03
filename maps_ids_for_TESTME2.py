@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
-"""
-map_ids_for_TESTME.py (auto-run version)
-- No command-line args required: just click Run.
-- Reads TESTME.xlsx, Accounts.csv, Contacts.csv, Accounts2.csv, Contacts2.csv from the same folder.
-- Fills AccountId and ContactId into TESTME.xlsx using fuzzy/substring match and lookup tables.
-- Infers Type, Sub-Type, and Category using keyword rules from process_cases_deepseek.py.
-- Writes TESTME_with_ids.xlsx and ambiguous_matches.csv in the same folder.
-"""
 
 from pathlib import Path
 import pandas as pd
 from rapidfuzz import process, fuzz
 import re, sys
 
-# ---------------- File Locations ----------------
 BASE_DIR = Path(__file__).parent
 
 TESTME_PATH     = BASE_DIR / "TESTME_with_ids2.xlsx"
@@ -25,8 +16,8 @@ CONTACTS2_PATH  = BASE_DIR / "Contacts2.csv"
 OUTPUT_XLSX     = BASE_DIR / "TESTME_with_ids2.xlsx"
 AMBIG_CSV       = BASE_DIR / "ambiguous_matches.csv"
 
-FUZZY_THRESHOLD       = 85
-FALLBACK_FUZZY_THRESH = 75
+FUZZY_THRESHOLD       = 85          #EDIT VALUES FOR STRICTER OR LOOSER MATCHING (HIGHER = MORE STRICT) lowest I found effective was 80
+FALLBACK_FUZZY_THRESH = 75         
 
 # ---------------- Allowed Values ----------------
 ALLOWED_TYPES = ['Administrative','App Development','Client Project','Configuration','Configuration Change','CPQ Issues','CSM Issues','Feature Request','Marketing','Miscellaneous Type','New Feature','Problem','Question','Sales Issues','Sales Non-CPQ Related Issues']
@@ -125,26 +116,18 @@ def main():
     contacts_df  = load_table(CONTACTS_PATH)
     accounts2_df = load_table(ACCOUNTS2_PATH)
     contacts2_df = load_table(CONTACTS2_PATH)
-
-    # merge supplemental tables
     accounts_df = pd.concat([accounts_df, accounts2_df], ignore_index=True).drop_duplicates().fillna("")
     contacts_df = pd.concat([contacts_df, contacts2_df], ignore_index=True).drop_duplicates().fillna("")
-
-    # load workbook
     all_sheets = pd.read_excel(TESTME_PATH, sheet_name=None, dtype=str, engine="openpyxl")
     sheet_name = "Full Acc and Contact" if "Full Acc and Contact" in all_sheets else list(all_sheets.keys())[0]
     cases_df = all_sheets[sheet_name].fillna("")
-
-    # build account/contact maps
     acc_id_col = "Id" if "Id" in accounts_df.columns else accounts_df.columns[0]
     acc_name_col = "Name" if "Name" in accounts_df.columns else accounts_df.columns[1]
     con_id_col = "Id" if "Id" in contacts_df.columns else contacts_df.columns[0]
     con_name_col = "Name" if "Name" in contacts_df.columns else contacts_df.columns[1]
-
     account_map = {normalize_company(r[acc_name_col]): (r[acc_id_col], r[acc_name_col]) for _,r in accounts_df.iterrows()}
     contact_map = {normalize_person(r[con_name_col]): (r[con_id_col], r[con_name_col]) for _,r in contacts_df.iterrows()}
 
-    # ensure output columns
     for c in ["AccountId","ContactId","Type","Sub-Type","Category"]:
         if c not in cases_df.columns:
             cases_df[c] = ""
@@ -154,7 +137,7 @@ def main():
         summary = str(row.get("Email Summary","")) + " " + str(row.get("Description",""))
         norm_text = normalize_text(summary)
 
-        # Account
+        # Account info
         if not row.get("AccountId"):
             best = process.extractOne(norm_text, list(account_map.keys()), scorer=fuzz.token_sort_ratio)
             if best and best[1] >= FUZZY_THRESHOLD:
@@ -163,7 +146,7 @@ def main():
             elif best:
                 ambiguous.append({"row":idx,"account_guess":best[0],"score":best[1]})
 
-        # Contact
+        # Contact info
         if not row.get("ContactId"):
             best = process.extractOne(norm_text, list(contact_map.keys()), scorer=fuzz.token_sort_ratio)
             if best and best[1] >= FUZZY_THRESHOLD:
@@ -172,7 +155,7 @@ def main():
             elif best:
                 ambiguous.append({"row":idx,"contact_guess":best[0],"score":best[1]})
 
-        # Classification
+    
         t,st,c = classify_type_subtype_category(summary)
         if not row.get("Type"): cases_df.at[idx,"Type"] = t
         if not row.get("Sub-Type"): cases_df.at[idx,"Sub-Type"] = st
@@ -180,21 +163,6 @@ def main():
         
     
 
-#     # save workbook
-#     all_sheets[sheet_name] = cases_df
-#     with pd.ExcelWriter(OUTPUT_XLSX, engine="openpyxl") as writer:
-#         for sname,df in all_sheets.items():
-#             df.to_excel(writer, sheet_name=sname, index=False)
-# 
-#     if ambiguous:
-#         pd.DataFrame(ambiguous).to_csv(AMBIG_CSV, index=False)
-# 
-#     print(f"Done. Output: {OUTPUT_XLSX}")
-#     if ambiguous:
-#         print(f"Ambiguous matches logged to: {AMBIG_CSV}")
-        
-        # --- Clean up before export ---
-    # Drop duplicate/conflicting columns
     drop_cols = []
     if "Sub-Type" in cases_df.columns:
         drop_cols.append("Sub-Type")
@@ -204,33 +172,18 @@ def main():
         print(f"Dropping duplicate columns: {drop_cols}")
         cases_df = cases_df.drop(columns=drop_cols)
 
-    # Remove Excel artifacts like _x000D_
     for col in cases_df.columns:
         if cases_df[col].dtype == "object":
             cases_df[col] = cases_df[col].str.replace("_x000D_", " ", regex=False)
             cases_df[col] = cases_df[col].str.replace("\n", " ", regex=False)
             cases_df[col] = cases_df[col].str.strip()
 
-    # Trim column headers
     cases_df.rename(columns=lambda c: c.strip(), inplace=True)
-
-#     # --- Save cleaned workbook ---
-#     CLEAN_OUTPUT_XLSX = TESTME_PATH.with_name("TESTME_with_ids_clean.xlsx")
-# 
-#     all_sheets[sheet_name] = cases_df
-#     with pd.ExcelWriter(CLEAN_OUTPUT_XLSX, engine="openpyxl") as writer:
-#         for sname, df in all_sheets.items():
-#             df.to_excel(writer, sheet_name=sname, index=False)
-# 
-#     print(f"Clean Excel written to: {CLEAN_OUTPUT_XLSX}")
-    # Save Excel
     CLEAN_OUTPUT_XLSX = TESTME_PATH.with_name("TESTME_with_ids_clean.xlsx")
     with pd.ExcelWriter(CLEAN_OUTPUT_XLSX, engine="openpyxl") as writer:
         for sname, df in all_sheets.items():
             df.to_excel(writer, sheet_name=sname, index=False)
     print(f"Clean Excel written to: {CLEAN_OUTPUT_XLSX}")
-
-    # ALSO save a CSV for Salesforce
     CLEAN_OUTPUT_CSV = TESTME_PATH.with_name("TESTME_with_ids_clean.csv")
     cases_df.to_csv(CLEAN_OUTPUT_CSV, index=False, encoding="utf-8")
     print(f"Clean CSV written to: {CLEAN_OUTPUT_CSV}")
