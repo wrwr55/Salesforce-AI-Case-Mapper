@@ -1,3 +1,62 @@
+BEFORE STARTING MAKE SURE THAT AUTO CREATED CASES ARE DELETED
+IF YOU ALREADY DELETED ALL OF THE AUTO CREATED CASES YOU CAN SKIP THIS PART
+To do this navigate deleteAutoCases.txt file and copy the contents
+Then navigate to the Salesforce inspector and select Data Export
+There, delete any other text and paste the contents of that file and run the query
+Select the button that says "Copy (Excel)"
+Then go to Data Import in the Salesforce inspector and MAKE SURE THE OBJECT IS SET TO CASE and change the Action from the default to Delete
+Then paste the data into the box that says "Paste data here" and then select "Run Insert"
+ONCE FINISHED YOU CAN PROCEED TO THE NEXT STEPS
+
+Create a working folder for files
+In the Salesforce enviroment go into the Salesforce Inspector and go to Export Data
+
+Inside of the accountQuery.txt, contactQuery.txt, and caseInfoQuery.txt you will see queries to run
+For each file copy the contained text and paste in the query box and make sure to delete any text that was there before
+Then select "Run Export" and select the "Copy (CSV)" button
+Paste the copied CSV content into the respective file from this repo (ie. contactQuert.txt would go into Contacts.csv)
+Once finished all three make sure that these files are all saved to the same folder and run the main file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ````markdown
 # Salesforce ID Mapper
 
