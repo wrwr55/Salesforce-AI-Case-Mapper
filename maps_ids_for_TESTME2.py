@@ -10,8 +10,8 @@ BASE_DIR = Path(__file__).parent
 TESTME_PATH     = BASE_DIR / "TESTME_with_ids2.xlsx"
 ACCOUNTS_PATH   = BASE_DIR / "Accounts.csv"
 CONTACTS_PATH   = BASE_DIR / "Contacts.csv"
-ACCOUNTS2_PATH  = BASE_DIR / "Accounts2.csv"
-CONTACTS2_PATH  = BASE_DIR / "Contacts2.csv"
+ACCOUNTS2_PATH  = BASE_DIR / "Accounts.csv"
+CONTACTS2_PATH  = BASE_DIR / "Contacts.csv"
 
 OUTPUT_XLSX     = BASE_DIR / "TESTME_with_ids2.xlsx"
 AMBIG_CSV       = BASE_DIR / "ambiguous_matches.csv"
