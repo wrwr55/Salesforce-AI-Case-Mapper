@@ -8,6 +8,7 @@ Then go to Data Import in the Salesforce inspector and MAKE SURE THE OBJECT IS S
 Then paste the data into the box that says "Paste data here" and then select "Run Insert"
 ONCE FINISHED YOU CAN PROCEED TO THE NEXT STEPS
 
+Go to your computer's terminal and type in "pip install requirements.txt"
 Create a working folder for files
 In the Salesforce enviroment go into the Salesforce Inspector and go to Export Data
 
