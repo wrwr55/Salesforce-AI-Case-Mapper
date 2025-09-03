@@ -18,6 +18,11 @@ Then select "Run Export" and select the "Copy (CSV)" button
 Paste the copied CSV content into the respective file from this repo (ie. contactQuert.txt would go into Contacts.csv)
 Once finished all three make sure that these files are all saved to the same folder and run the main file
 
+Once the main file is ran then it will create multiple files, however the one we are going to use to import to Salesforce is called TESTME_with_ids_clean.xlsx
+Open this file in Excel and hide the columns the contain the Description and the Email Summary because they are no longer needed
+Copy the entire file and go back to the Salesforce inspector and navigate to Data Import
+There make sure to change the Action to Upsert and the Object to case
+Then paste the contents of the file into the Paste Data Here box and then click the Run Insert button
 
 
 
