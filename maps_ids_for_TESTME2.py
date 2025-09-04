@@ -26,7 +26,7 @@ ALLOWED_CATEGORIES = ['Client Training','System Access','Data Extraction','Plann
 
 COMMON_COMPANY_SUFFIXES = {"inc","inc.","llc","l.l.c","ltd","co","co.","corp","corporation","company","incorporated","plc","llp"}
 
-# ---------------- Helpers ----------------
+#Make text easy to embed
 def normalize_text(s: str) -> str:
     if not isinstance(s, str): return ""
     s = s.lower().strip()
@@ -53,11 +53,11 @@ def load_table(path: Path) -> pd.DataFrame:
         return pd.read_csv(path, dtype=str).fillna("")
     return pd.read_excel(path, dtype=str, engine="openpyxl").fillna("")
 
-# ---------------- Classification Rules ----------------
+
 def classify_type_subtype_category(text: str) -> tuple[str,str,str]:
     t = text.lower()
 
-    # Type
+    #Type
     if "cpq" in t:
         type_value = "CPQ Issues"
     elif "salesforce" in t:
@@ -71,7 +71,7 @@ def classify_type_subtype_category(text: str) -> tuple[str,str,str]:
     else:
         type_value = "Miscellaneous Type"
 
-    # Sub-Type
+    #Sub-Type
     if "servicedesk" in t:
         subtype_value = "ServiceDesk+ App"
     elif "springcm" in t:
@@ -85,7 +85,7 @@ def classify_type_subtype_category(text: str) -> tuple[str,str,str]:
     else:
         subtype_value = "Miscellaneous SubType"
 
-    # Category
+    #Category
     if "training" in t:
         category_value = "Client Training"
     elif any(w in t for w in ["login","sso","access","permission"]):
@@ -101,13 +101,12 @@ def classify_type_subtype_category(text: str) -> tuple[str,str,str]:
     else:
         category_value = "Case Management"
 
-    # snap to allowed lists
+    
     if type_value not in ALLOWED_TYPES: type_value = "Miscellaneous Type"
     if subtype_value not in ALLOWED_SUBTYPES: subtype_value = "Miscellaneous SubType"
     if category_value not in ALLOWED_CATEGORIES: category_value = "Case Management"
     return type_value, subtype_value, category_value
-
-# ---------------- Main ----------------
+    
 def main():
     if not TESTME_PATH.exists():
         print(f"ERROR: TESTME.xlsx not found at {TESTME_PATH}"); sys.exit(1)
@@ -137,7 +136,7 @@ def main():
         summary = str(row.get("Email Summary","")) + " " + str(row.get("Description",""))
         norm_text = normalize_text(summary)
 
-        # Account info
+        #Account
         if not row.get("AccountId"):
             best = process.extractOne(norm_text, list(account_map.keys()), scorer=fuzz.token_sort_ratio)
             if best and best[1] >= FUZZY_THRESHOLD:
@@ -146,7 +145,7 @@ def main():
             elif best:
                 ambiguous.append({"row":idx,"account_guess":best[0],"score":best[1]})
 
-        # Contact info
+        #Contact
         if not row.get("ContactId"):
             best = process.extractOne(norm_text, list(contact_map.keys()), scorer=fuzz.token_sort_ratio)
             if best and best[1] >= FUZZY_THRESHOLD:
