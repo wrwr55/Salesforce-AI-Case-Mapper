@@ -33,7 +33,6 @@ WHERE (
     OR SUBJECT LIKE 'An Opportunity is %' 
     OR SUBJECT LIKE 'Canceled event %' 
     OR SUBJECT LIKE 'An error occurred with %' 
-    OR SUBJECT LIKE 'Sandbox: %' 
     OR SUBJECT LIKE 'Report results %' 
     OR SUBJECT LIKE 'Your Daily Digest %' 
     OR SUBJECT LIKE 'Request for Missing %' 
@@ -129,8 +128,6 @@ WHERE (
     OR SUBJECT LIKE 'Your outbound fax %'
     OR SUBJECT LIKE 'The following Matter %'
     OR SUBJECT LIKE 'Delayed Response %' 
-    OR SUBJECT LIKE 'Sandbox: Sub Formula %' 
-    OR SUBJECT LIKE 'Sandbox: Formula %' 
     OR SUBJECT LIKE 'Appointment Notifier %' 
     OR SuppliedEmail = 'auth@pipedrive.com' 
     OR SuppliedEmail = 'learn@send.zapier.com' 
@@ -191,4 +188,5 @@ AND (NOT Subject LIKE 'Fwd:%')
 AND (NOT Subject LIKE 'RE:%')  
 AND (NOT Subject LIKE 'Re:%')
 AND Id != '500Qp00000KV7HpIAL'  
+
 ORDER BY CreatedDate DESC
