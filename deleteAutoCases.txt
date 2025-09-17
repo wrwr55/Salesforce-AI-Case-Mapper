@@ -179,19 +179,9 @@ WHERE (
     OR SUBJECT LIKE '% Case Has Been Signed'
     OR SUBJECT LIKE 'Out of the office %'
     OR SUBJECT LIKE 'Company Call Recording %'
-    OR SUBJECT LIKE '% has submitted a new referral for %' 
+    OR SUBJECT LIKE '% has submitted a new referral for %'
     OR SUBJECT LIKE 'Fax Received for Matter: %' 
     OR SUBJECT LIKE 'Please update the closing confirmation form in Salesforce - %' 
-    OR SUBJECT LIKE '****Missed Call Alert from Caller %' 
-    OR SUBJECT LIKE 'Buyer has been disclosed - %'
-    OR SUBJECT LIKE 'Buyer has been qualified - %'
-    OR SUBJECT LIKE 'Sandbox: Fax Received for Matter: %'
-    OR SUBJECT LIKE 'Earnest Money Request Form Submitted - %'
-    OR SUBJECT LIKE 'Sandbox: One or more of your Salesforce certificates %' 
-    OR SUBJECT LIKE '% Got You Covered. %' 
-    OR SUBJECT LIKE 'Sandbox: We Value Your Feedback! %' 
-    OR SUBJECT LIKE 'Sandbox: Assessment of Your Lemon Law Claim' 
-    OR SUBJECT LIKE 'Sandbox: Re: Lemon Law Information Packet' 
 
 )
 AND (NOT Subject LIKE 'FW:%') 
