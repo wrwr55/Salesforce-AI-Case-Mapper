@@ -1,0 +1,37 @@
+SELECT Id, Subject, CreatedDate, Status, Type, Sub_Type__c, Category__c, Assign_To__c
+FROM Case 
+WHERE (
+    SUBJECT LIKE '****Missed Call Alert from Caller %' 
+    OR SUBJECT LIKE 'Buyer has been disclosed - %'
+    OR SUBJECT LIKE 'Buyer has been qualified - %'
+    OR SUBJECT LIKE 'Sandbox: Fax Received for Matter: %'
+    OR SUBJECT LIKE 'Earnest Money Request Form Submitted - %'
+    OR SUBJECT LIKE 'Sandbox: One or more of your Salesforce certificates %' 
+    OR SUBJECT LIKE '% Got You Covered. %' 
+    OR SUBJECT LIKE 'Sandbox: We Value Your Feedback! %' 
+    OR SUBJECT LIKE 'Sandbox: Assessment of Your Lemon Law Claim' 
+    OR SUBJECT LIKE 'Sandbox: Re: Lemon Law Information Packet' 
+    OR SUBJECT LIKE 'Your Exam Starts Soon' 
+    OR SUBJECT LIKE 'Do You Need Transportation or a Translator for Your Medical Exam?' 
+    OR SUBJECT LIKE 'Reminder: Your Upcoming Medical Exam' 
+    OR SUBJECT LIKE 'IME Scheduled %'
+    OR SUBJECT LIKE 'IME Created %'
+    OR SUBJECT LIKE '% Medical Exam Reminder'
+    OR SUBJECT LIKE 'Assessment of Your Lemon Law Claim'
+    OR SuppliedEmail = 'events@send.zapier.com' 
+    OR SuppliedEmail = 'info@celigo.com' 
+    OR SUBJECT LIKE 'Sandbox: ACTION REQUIRED - New Intake needs your attention - %'
+    OR SUBJECT LIKE 'Sandbox: Your Questionnaire has been Submitted' 
+    OR SuppliedEmail = 'discover@pandadoc.com'
+    OR SUBJECT LIKE 'Sandbox: Medical Records Received - %'
+    OR SUBJECT LIKE 'Sandbox: Call has been logged with Matter - %'
+
+)
+AND (NOT Subject LIKE 'FW:%') 
+AND (NOT Subject LIKE 'Fw:%')  
+AND (NOT Subject LIKE 'Fwd:%')  
+AND (NOT Subject LIKE 'RE:%')  
+AND (NOT Subject LIKE 'Re:%')
+AND Id != '500Qp00000KV7HpIAL'  
+
+ORDER BY CreatedDate DESC
